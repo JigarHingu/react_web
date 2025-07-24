@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Vite cache
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor/IDE-specific
+.vscode/
+.idea/
+.DS_Store
+
+# OS metadata files
+Thumbs.db
+
+# Environment variables
+.env
+.env.*.local
+
+# Optional: macOS and Windows system files
+*.swp
+*.swo
+
+# Optional: local testing or preview files
+coverage/
