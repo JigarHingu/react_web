@@ -11,7 +11,6 @@ const ProfilePage = () => {
   useEffect(() => {
     setIsLoading(true);
 
-    // --- UPDATED LOGIC ---
     const minTimePromise = new Promise(resolve => setTimeout(resolve, 500));
     
     Promise.all([fetchUserData(), minTimePromise])
@@ -23,12 +22,6 @@ const ProfilePage = () => {
         setIsLoading(false);
       });
   }, []);
-
-  //   fetchUserData()
-  //     .then(data => setUser(data))
-  //     .catch(error => console.error("Error fetching user data:", error))
-  //     .finally(() => setIsLoading(false));
-  // }, []);
 
   if (isLoading) return <LoadingSpinner />;
   if (!user) return <Card><p>Could not load user profile.</p></Card>;

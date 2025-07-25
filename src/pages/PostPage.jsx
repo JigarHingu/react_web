@@ -4,17 +4,8 @@ import { fetchPostById } from '../api/mockApi';
 import Card from '../components/shared/Card';
 import Button from '../components/shared/Button';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
+import CodeBlock from '../components/shared/CodeBlock';
 
-// A simple component to format our code blocks
-const CodeBlock = ({ children }) => {
-  return (
-    <pre className="bg-gray-800 text-white rounded-lg p-4 my-4 overflow-x-auto">
-      <code>
-        {children}
-      </code>
-    </pre>
-  );
-};
 
 // A component to parse and render the content
 const PostContent = ({ content }) => {
@@ -67,12 +58,6 @@ const PostPage = () => {
       });
   }, [postId]);
   
-  //   fetchPostById(postId)
-  //     .then(data => setPost(data))
-  //     .catch(err => setError(err.message))
-  //     .finally(() => setIsLoading(false));
-  // }, [postId]);
-
   if (isLoading) return <LoadingSpinner />;
 
   if (error) {

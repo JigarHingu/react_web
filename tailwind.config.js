@@ -6,9 +6,6 @@ export default {
   ],
   theme: {
     extend: {
-      // animation: {
-      //   'spin': 'spin 10s linear infinite',
-      // },
     },
   },
   plugins: [],

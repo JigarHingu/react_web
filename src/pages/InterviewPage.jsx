@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import useDebounce from '/src/hooks/useDebounce.js';
+import CodeBlock from '../components/shared/CodeBlock';
 
-// --- Helper components for styling the guide ---
-const CodeBlock = ({ children }) => (
-  <pre className="bg-gray-800 text-white rounded-lg p-4 mt-4 overflow-x-auto text-sm">
-    <code>{children.trim()}</code>
-  </pre>
-);
 
 const AccordionItem = ({ title, children, isOpen, onClick }) => {
   return (
