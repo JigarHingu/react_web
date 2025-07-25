@@ -16,6 +16,7 @@ const HomePage = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // Effect to fetch posts
+  
   useEffect(() => {
     setIsLoading(true);
     const minTimePromise = new Promise(resolve => setTimeout(resolve, 500));
