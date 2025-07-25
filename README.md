@@ -84,12 +84,12 @@ http://localhost:5173
 
 ## 📷 Screenshots
 
-[Homepage](./src/assets/Home.png)
-[Profilepage](./src/assets/Profile.png)
-[NewsLetterpage](./src/assets/NewsLetter.png)
-[Interviewpage](./src/assets/Interview.png)
-[Aboutpage](./src/assets/About.png)
-[404page](./src/assets/404.png)
+![Homepage](./src/assets/Home.png)
+![Profilepage](./src/assets/Profile.png)
+![NewsLetterpage](./src/assets/NewsLetter.png)
+![Interviewpage](./src/assets/Interview.png)
+![Aboutpage](./src/assets/About.png)
+![404page](./src/assets/404.png)
 
 ## 🙌 Contributing
 
