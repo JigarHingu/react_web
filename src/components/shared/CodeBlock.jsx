@@ -31,7 +31,7 @@ const CodeBlock = ({ children }) => {
 
   return (
     <div className="relative">
-      <pre className="bg-gray-800 text-white rounded-lg p-4 pt-10 mt-4 overflow-x-auto text-sm">
+      <pre className="bg-gray-800 text-white rounded-lg p-4 pt-8 mt-4 overflow-x-auto text-sm">
         <code>{children.trim()}</code>
       </pre>
       <button

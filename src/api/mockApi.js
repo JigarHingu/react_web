@@ -212,8 +212,82 @@ function useDebounce(value, delay) {
 \`\`\`
 We then use this hook in our \`HomePage\` to get a "delayed" version of the search term, and use that for filtering.
 
+**Next up:** We'll explore an advanced topic: performance optimization with custom hooks.`,
+    nextPostId: 7 
+  },
+  {
+    id: 7, 
+    title: 'Advanced: Performance Optimization',
+    summary: 'Learn to prevent unnecessary re-renders and calculations with `useMemo` and `React.memo`.',
+    content: `As an application grows, performance becomes critical. React provides powerful hooks to prevent wasted work.
+
+**Memoizing Calculations with \`useMemo\`**
+On our homepage, the filtering and sorting logic would re-run on every single render, even if only the search panel's visibility changed. We use \`useMemo\` to "memoize" (remember) the result of this calculation. It will only re-calculate the list when one of its dependencies (like the search term or posts) actually changes.
+\`\`\`jsx
+const filteredPosts = useMemo(() => {
+  // ... expensive filtering and sorting logic ...
+  return processedPosts;
+}, [debouncedSearchTerm, posts, sortOrder]);
+\`\`\`
+
+**Memoizing Components with \`React.memo\`**
+Similarly, when the homepage re-renders, all of its child \`<Card>\` components would re-render too. We can prevent this by wrapping our component in \`React.memo\`. This tells React not to re-render the component if its props haven't changed.
+\`\`\`jsx
+// src/components/shared/Card.jsx
+const Card = ({ children }) => { /* ... */ };
+
+export default React.memo(Card);
+\`\`\`
+
+**Memoizing Functions with \`useCallback\`**
+When you pass a function as a prop to a memoized child component, you should wrap it in \`useCallback\`. This prevents the function from being re-created on every render. Without it, the child component would see a "new" function every time and re-render unnecessarily.
+\`\`\`jsx
+// ParentComponent.jsx
+const handleAction = useCallback(() => {
+  // ... some logic ...
+}, []); // Empty dependency array means the function is created only once.
+
+return <MemoizedChildComponent onAction={handleAction} />;
+\`\`\`
+These three tools—\`useMemo\`, \`React.memo\`, and \`useCallback\`—are essential for building fast, professional React applications.
+
+**Next up:** We'll explore the industry-standard solution for managing complex, shared state with Redux Toolkit.`,
+    nextPostId: 8 
+  },
+  {
+    id: 8,
+    title: 'Global State with Redux Toolkit',
+    summary: 'Learn the official, industry-standard way to manage complex, shared application state.',
+    content: `When an application grows, passing props through many layers becomes difficult. A global state management library like Redux solves this.
+
+**Redux Toolkit (RTK)** is the official, recommended way to use Redux. It simplifies the process with two key functions:
+
+**1. \`createSlice()\`**
+This function creates a "slice" of your state. It automatically generates reducer logic and the "actions" that describe events.
+\`\`\`jsx
+// src/store/postsSlice.js
+export const postsSlice = createSlice({
+  name: 'posts',
+  initialState,
+  reducers: { /* ... */ },
+  extraReducers: { /* ... */ }
+});
+\`\`\`
+
+**2. \`configureStore()\`**
+This creates the single, global store that holds all your slices.
+\`\`\`jsx
+// src/store/store.js
+export const store = configureStore({
+  reducer: {
+    posts: postsReducer,
+  },
+});
+\`\`\`
+In our components, we use the \`useSelector\` hook to read data from this store and \`useDispatch\` to send actions to it.
+
 **Congratulations!** You've completed the learning path.`,
-    nextPostId: null 
+    nextPostId: null
   }
 ];
 

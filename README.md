@@ -1,4 +1,4 @@
-# 📘 ReactLearn: A Hands-On Learning Project
+# ![React](./public/react.svg) ReactLearn: A Hands-On Learning Project
 
 **ReactLearn** is a feature-rich, single-page application built from the ground up to serve as a hands-on learning tool for core React concepts. It's designed to be a practical example for beginners, covering everything from project setup to advanced features like custom hooks and performance optimization.
 
@@ -30,6 +30,9 @@ Utilizes `react-router-dom` to create a smooth, multi-page experience without pa
 
 ### 🧪 Custom Hooks
 - Includes a custom `useDebounce` hook to optimize search and prevent excessive re-renders.
+
+### ⚡ Performance Optimization
+- **Memoization**: Uses `useMemo` to prevent expensive calculations on re-renders and `React.memo` to prevent child components from re-rendering unnecessarily.
 
 ### 📚 Interactive Documentation
 - **About Page**: An interactive project overview with clickable elements.
@@ -93,12 +96,10 @@ http://localhost:5173
 
 # 📘 ReactLearn: A Hands-On Learning Project
 
-[🚀 Live Demo](https://react-web-avg3.onrender.com)
+- [🚀 Live Demo](https://react-web-avg3.onrender.com)
 
 ReactLearn is a feature-rich...
 
 ## 🙌 Contributing
 
 - Feel free to fork, open issues, or submit pull requests to enhance the project.
-
-

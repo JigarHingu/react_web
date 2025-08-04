@@ -14,11 +14,12 @@ import PostPage from "./pages/PostPage";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 font-sans flex flex-col transition-colors duration-300">
+    <div className="h-screen bg-gray-100 font-sans flex flex-col transition-colors duration-300">
       {/* The Header no longer needs the onNavigate prop */}
       <Header />
 
-      <main className="flex-grow container mx-auto px-6 py-8">
+      <main className="flex-grow overflow-y-auto">
+        <div className="container mx-auto px-6 py-8">
         {/* The <Routes> component works like a switch. It looks at the current URL and renders the first <Route> that matches the path.
         */}
         <Routes>
@@ -43,6 +44,7 @@ export default function App() {
               This is perfect for a 404 Not Found page. */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        </div>
       </main>
 
       <Footer />

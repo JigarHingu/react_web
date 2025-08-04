@@ -1,33 +1,44 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { fetchPostsData } from "../api/mockApi";
+import { useSelector, useDispatch } from 'react-redux'; // 1. Import Redux hooks
+import { getPosts } from '../store/postsSlice'; // 2. Import our async thunk action
 import Card from "../components/shared/Card";
 import LoadingSpinner from "../components/shared/LoadingSpinner";
 import useDebounce from "/src/hooks/useDebounce.js";
 
 const HomePage = () => {
-  const [posts, setPosts] = useState([]);
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredPosts, setFilteredPosts] = useState([]);
   const [sortOrder, setSortOrder] = useState("default");
-  const [isLoading, setIsLoading] = useState(true);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const searchInputRef = useRef(null);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // Effect to fetch posts
-  
-  useEffect(() => {
-    setIsLoading(true);
-    const minTimePromise = new Promise(resolve => setTimeout(resolve, 500));
-    Promise.all([fetchPostsData(), minTimePromise])
-      .then(([data]) => setPosts(data))
-      .catch((error) => console.error("Error fetching posts:", error))
-      .finally(() => setIsLoading(false));
-  }, []);
+  // --- REDUX STATE & DISPATCH ---
+  const dispatch = useDispatch();
+  // 3. Use `useSelector` to read data from the Redux store
+  const posts = useSelector((state) => state.posts.posts);
+  const postStatus = useSelector((state) => state.posts.status);
+  const error = useSelector((state) => state.posts.error);
 
-  // Effect to filter and sort posts based on the debounced search term
+  // // 4. Use `useEffect` to dispatch the fetch action when the component mounts
+  // useEffect(() => {
+  //   // We only fetch posts if they haven't been fetched yet ('idle' status)
+  //   if (postStatus === 'idle') {
+  //     dispatch(getPosts());
+  //   }
+  // }, [postStatus, dispatch]);
+
+  // --- UPDATED EFFECT ---
+  // We removed the `if (postStatus === 'idle')` check.
+  // This ensures that every time the HomePage mounts, it dispatches the action
+  // to get the latest post data from our mock API.
   useEffect(() => {
+    dispatch(getPosts());
+  }, [dispatch]);
+
+  // 5. The `useMemo` for filtering now depends on the `posts` from Redux
+  const filteredPosts = useMemo(() => {
     let processedPosts = [...posts];
     if (debouncedSearchTerm) {
       processedPosts = processedPosts.filter(post =>
@@ -40,7 +51,7 @@ const HomePage = () => {
     } else if (sortOrder === "desc") {
       processedPosts.sort((a, b) => b.title.localeCompare(a.title));
     }
-    setFilteredPosts(processedPosts);
+    return processedPosts;
   }, [debouncedSearchTerm, posts, sortOrder]);
 
   const handleSearchIconClick = () => {
@@ -50,25 +61,49 @@ const HomePage = () => {
 
   const handleBlurContainer = (e) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-      if (searchTerm === "") {
-        setIsSearchActive(false);
-      }
+      if (searchTerm === "") setIsSearchActive(false);
     }
   };
 
-  if (isLoading) {
-    return <LoadingSpinner />;
+  // --- RENDER LOGIC ---
+  // 6. The render logic now checks the `postStatus` from Redux
+  let content;
+  if (postStatus === 'loading' || postStatus === 'idle') {
+    content = <LoadingSpinner />;
+  } else if (postStatus === 'succeeded') {
+    content = (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredPosts.length > 0 ? (
+          filteredPosts.map((post) => (
+            <Card key={post.id}>
+              <Link to={`/posts/${post.id}`}>
+                <h2 className="text-2xl font-bold text-blue-700 mb-2 hover:underline">
+                  {post.title}
+                </h2>
+              </Link>
+              <p className="text-gray-700">{post.summary}</p>
+            </Card>
+          ))
+        ) : (
+          <p className="text-lg text-gray-600 col-span-full text-center">
+            No posts found matching your search.
+          </p>
+        )}
+      </div>
+    );
+  } else if (postStatus === 'failed') {
+    content = <p className="text-red-500 text-center">{error}</p>;
   }
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold text-gray-800">Welcome to the Blog</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Welcome to the Blog</h1>
           <p className="text-lg text-gray-600 mt-2">Discover articles about learning React.</p>
         </div>
         
-        <div onBlur={handleBlurContainer} tabIndex={-1} className="relative">
+        <div onBlur={handleBlurContainer} tabIndex={-1} className="relative self-end md:self-start">
           <div className="relative flex items-center">
             <input
               ref={searchInputRef}
@@ -78,25 +113,17 @@ const HomePage = () => {
                 transition-all duration-300 ease-in-out
                 h-12 pl-5 pr-12 rounded-full border border-gray-300 
                 focus:outline-none focus:ring-2 focus:ring-blue-500
-                ${isSearchActive ? 'w-64 opacity-100' : 'w-0 opacity-0'}
+                ${isSearchActive ? 'w-48 sm:w-64 opacity-100' : 'w-0 opacity-0'}
               `}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && isSearchActive && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-12 top-1/2 -translate-y-1/2 p-1"
-                aria-label="Clear search"
-              >
+              <button onClick={() => setSearchTerm("")} className="absolute right-12 top-1/2 -translate-y-1/2 p-1" aria-label="Clear search">
                 <svg className="w-5 h-5 text-gray-400 hover:text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             )}
-            <button
-              onClick={handleSearchIconClick}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
-              aria-label="Open search bar"
-            >
+            <button onClick={handleSearchIconClick} className="absolute right-3 top-1/2 -translate-y-1/2 p-1" aria-label="Open search bar">
               <svg className="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
             </button>
           </div>
@@ -112,24 +139,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredPosts.length > 0 ? (
-          filteredPosts.map((post) => (
-            <Card key={post.id}>
-              <Link to={`/posts/${post.id}`}>
-                <h2 className="text-2xl font-bold text-blue-700 mb-2">
-                  {post.title}
-                </h2>
-              </Link>
-              <p className="text-gray-700">{post.summary}</p>
-            </Card>
-          ))
-        ) : (
-          <p className="text-lg text-gray-600 col-span-full text-center">
-            No posts found matching your search.
-          </p>
-        )}
-      </div>
+      {content}
     </div>
   );
 };

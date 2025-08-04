@@ -26,7 +26,7 @@ const PostContent = ({ content }) => {
           const formattedPart = part.split('**').map((text, i) => 
             i % 2 === 1 ? <strong key={i}>{text}</strong> : text
           );
-          return <p key={index} className="text-lg text-gray-700 leading-relaxed my-4 whitespace-pre-line">{formattedPart}</p>;
+          return <p key={index} className="text-lg text-gray-700 leading-relaxed my-2 whitespace-pre-line">{formattedPart}</p>;
         }
       })}
     </div>
